@@ -13,3 +13,17 @@ export const logs: SqlLite = {
     { name: "logs_type_date_idx", columns: [{ name: "type" }, { name: "created_at" }] },
   ],
 };
+
+export const event: SqlLite = {
+  table: "event",
+  columns: [
+    { name: "id", type: "INTEGER", index: "PRIMARY KEY", ai: true },
+    { name: "event_name", type: "TEXT", notNull: true },
+    { name: "event_series", type: "TEXT", notNull: true },
+    { name: "created_date", type: "INTEGER", default: "CURRENT_TIMESTAMP"},
+    { name: "event_created_by_user_id", type: "INTEGER", notNull: true },
+
+  ],
+  indexes: [
+     ],
+};
