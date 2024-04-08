@@ -1,3 +1,4 @@
+// https://github.com/leemason/querybuilder
 interface QueryObject {
   ACTION: "select" | "insert" | "delete" | "update";
   COLUMNS: string[] | string;
@@ -176,6 +177,8 @@ export default query;
 // AS (alias)       SELECT column_name AS column_alias FROM table_name | SELECT column_name FROM table_name AS table_alias
 // EXISTS           IF EXISTS (SELECT * FROM table_name WHERE id = ?)BEGIN--do what needs to be done if existsENDELSEBEGIN--do what needs to be done if notEND
 
+//
+//
 // var sql = Manager.connection()
 //   .table("users")
 //   .select("first_name", "email")
@@ -202,3 +205,35 @@ export default query;
 //   .orderBy("email", "desc")
 //   .skip(5)
 //   .take(10);
+
+//
+//
+// export const query = () => {
+//// this.q = {
+////   TABLE: "",
+////   COLUMNS: [],
+////   VALUES: [],
+////   WHERE: [],
+////   GROUPBY: [],
+////   ORDERBY: [],
+//// }
+//// select: (columns: string[]) => {},
+//// insert: (columns: string[]) => {},
+//// delete,
+//   update: (columns: string[]) => {},
+////   from: (table: string) => {},
+////   into: (table: string) => {},
+//   where: (...conditions: [string, any, string?][]) => {
+//     conditions.map((condition) => {
+//       if (!condition[2]) condition.push("=");
+//     });
+//   },
+//   orWhere: (...conditions: [string, any, string?][]) => {},
+//   //whereBetween, whereNotBetween, whereIn, whereNotIn, whereNull, whereNotNull, whereExists,
+//   // join, innerJoin, leftJoin, leftOuterJoin, rightJoin, rightOuterJoin, outerJoin, fullOuterJoin, crossJoin
+//   // having, union
+//   // orderBy, groupBy, limit
+//   // delete, truncate,
+//   // count
+//   // all, first, run
+// };

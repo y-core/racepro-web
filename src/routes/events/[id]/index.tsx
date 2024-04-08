@@ -11,6 +11,10 @@ export interface Event {
   event_details: string;
 }
 
+// TODO: Upload image
+// https://codesandbox.io/p/sandbox/form-unsigned-upload-multiple-wgxlfm
+// https://cloudinary.com/documentation/client_side_uploading
+
 const getData = server$(async function (): Promise<Event | null> {
   const db = this.platform.env["MAIN_DATA"];
   return await db.prepare(q.select().from("event").where(["id", this.params.id]).render()).first<Event>();
