@@ -1,6 +1,14 @@
 import { getTableName, is, SQL } from "drizzle-orm";
 import { getTableConfig, SQLiteBaseInteger, SQLiteTable } from "drizzle-orm/sqlite-core";
 
+interface IndexObject {
+  table: string;
+  name: string;
+  columns: string[];
+  unique: boolean;
+  where?: SQL<unknown>;
+}
+
 export const buildSqlite = {
   serializeSQLite: async (path: string) => {
     const schema = await import(path);
@@ -11,6 +19,7 @@ export const buildSqlite = {
   },
   createTable: async (tables: SQLiteTable[]) => {
     const tableList = tables.flatMap((table) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { name: tableName, columns, indexes, foreignKeys: tableForeignKeys, primaryKeys, uniqueConstraints } = getTableConfig(table);
       const tableObj = {
         tableName: tableName,
@@ -18,7 +27,7 @@ export const buildSqlite = {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, no-constant-condition
         exists: true ? "" : "IF NOT EXISTS ",
       };
-      const indexObj = [];
+      const indexObj: IndexObject[] = [];
 
       const columnItems = columns.map((column) => {
         const columnObj = {
@@ -47,6 +56,7 @@ export const buildSqlite = {
           table: tableName,
           name: value.config.name,
           columns: value.config.columns.map((it) => it.name),
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           unique: value.config.unique ?? false,
           where: value.config.where,
         });
@@ -72,21 +82,23 @@ export const buildSqlite = {
         return `\n  FOREIGN KEY (${fkObj.columnsFrom}) REFERENCES \`${fkObj.tableTo}\`(${fkObj.columnsTo})${fkObj.onUpdate}${fkObj.onDelete}`;
       });
 
-      const uniqueItems = uniqueConstraints.map((key) => {
-        const columns = key.columns
-          .map((it) => it.name)
-          .map((it) => `\`${it}\``)
-          .join(",");
+      const uniqueItems = uniqueConstraints
+        .filter((key) => typeof key.name !== "undefined")
+        .map((key) => {
+          const columns = key.columns
+            .map((it) => it.name)
+            .map((it) => `\`${it}\``)
+            .join(",");
 
-        indexObj.push({
-          table: tableName,
-          name: key.name,
-          columns: key.columns.map((it) => it.name),
-          unique: true,
+          indexObj.push({
+            table: tableName,
+            name: key.name ?? `${tableName}${String(Math.random)}`,
+            columns: key.columns.map((it) => it.name),
+            unique: true,
+          });
+
+          return `\n  CONSTRAINT ${key.name} UNIQUE(${columns})`;
         });
-
-        return `\n  CONSTRAINT ${key.name} UNIQUE(${columns})`;
-      });
 
       const indexItems = indexObj.map((index) => {
         const indexPart = index.unique ? "UNIQUE INDEX" : "INDEX";
@@ -112,7 +124,7 @@ export const buildSqlite = {
   },
 };
 
-const sqlToStr = (sql) => {
+const sqlToStr = (sql: SQL<unknown>) => {
   return sql.toQuery({
     escapeName: () => {
       throw new Error("we don't support params for `sql` default values");

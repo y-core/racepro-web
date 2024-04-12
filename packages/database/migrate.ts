@@ -1,10 +1,10 @@
-import { type SqlLite } from "^/database/builder";
 import q from "^/database/query";
 import { buildSqlite } from "^/database/buildSqlite";
+import { type SQLiteTable, type TableConfig } from "drizzle-orm/sqlite-core";
 
 interface Model {
   seed<T = unknown>(db: D1Database, table: string, column: string[], data: string[][]): Promise<D1Result<T>[] | null>;
-  migrate(db: D1Database, table: SqlLite): Promise<D1Result<unknown>[] | null>;
+  migrate(db: D1Database, tables: SQLiteTable<TableConfig>[]): Promise<D1Result<unknown>[] | null>;
 }
 
 const migrate: Model = {
