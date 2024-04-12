@@ -2,6 +2,8 @@ name = "racepro-web"
 compatibility_date = "2024-03-20"
 pages_build_output_dir = "./dist"
 
+compatibility_flags = [ "nodejs_compat" ]
+
 d1_databases = [
   { binding = "MAIN_DATA", database_name = "racepro", database_id = "174e9c26-beb9-4f02-9570-25b26b60af3b" },
 ]
