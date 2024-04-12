@@ -15,20 +15,24 @@ const migration = {
 
 const getPragma = server$(async function () {
   const db = this.platform.env["MAIN_DATA"];
-  const res = await db.prepare("PRAGMA table_info(event)").all();
-
-  // return {};
-  return res.results.map((row) => {
-    return row.name;
-  });
+  try {
+    const res = await db.prepare("PRAGMA table_info(event)").all();
+    return res.results.map((row) => row.name);
+  } catch (e: any) {
+    console.error({ message: e.message });
+    return [];
+  }
 });
 
 const getData = server$(async function () {
   const db = this.platform.env["MAIN_DATA"];
-  const res = await db.prepare(q.select().from("event").render()).all();
-
-  // return [];
-  return res.results;
+  try {
+    const res = await db.prepare(q.select().from("event").render()).all();
+    return res.results;
+  } catch (e: any) {
+    console.error({ message: e.message });
+    return [];
+  }
 });
 
 // const migrateSchema = server$(async function (schema) {
@@ -70,6 +74,7 @@ export default component$(() => {
           class="h-12 w-28 rounded-md bg-sky-600 text-slate-200 ring-1 ring-inset hover:bg-sky-700 "
           onClick$={async () => {
             // const res = await migrateSchema(s.schema.todos);
+            console.log("Migrating");
             const res = await migrateSchema();
             console.log(res);
           }}
@@ -80,6 +85,7 @@ export default component$(() => {
           class="h-12 w-28 rounded-md bg-sky-600 text-slate-200 ring-1 ring-inset hover:bg-sky-700 "
           onClick$={async () => {
             console.log(s.data.event);
+            console.log("Seeding");
             const res = await seedData(s.data.event);
             // const res = await seedData();
             console.log(res);
