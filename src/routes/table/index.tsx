@@ -79,6 +79,7 @@ export default component$(() => {
         <button
           class="h-12 w-28 rounded-md bg-sky-600 text-slate-200 ring-1 ring-inset hover:bg-sky-700 "
           onClick$={async () => {
+            console.log(s.data.event);
             const res = await seedData(s.data.event);
             // const res = await seedData();
             console.log(res);
