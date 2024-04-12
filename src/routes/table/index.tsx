@@ -37,12 +37,14 @@ const getData = server$(async function () {
 
 // const migrateSchema = server$(async function (schema) {
 const migrateSchema = server$(async function () {
+  console.log("server migrating");
   const db = this.platform.env.MAIN_DATA;
-  console.log("migrating", db);
+  console.log("db migrating", db);
   const tables = await buildSqlite.serializeSQLite("/src/server/schema/20240404.sql.ts");
   return await m.migrate(db, tables);
 });
 const seedData = server$(async function (schema) {
+  console.log("server seeding");
   const db = this.platform.env.MAIN_DATA;
   console.log("seeding", db);
   return await m.seed(db, schema.table, schema.columns, schema.data);
