@@ -1,4 +1,5 @@
 // https://github.com/leemason/querybuilder
+// https://github.com/himorishige/qwik-drizzle-d1-starter
 interface QueryObject {
   ACTION: "select" | "insert" | "delete" | "update";
   COLUMNS: string[] | string;
@@ -15,6 +16,7 @@ export interface Query {
   select(columns?: string[]): Query;
   delete(columns?: string[]): Query;
   insert(columns?: string[]): Query;
+  update(columns?: string[]): Query;
   from(table: string): Query;
   into(table: string): Query;
   where(columns?: string[]): Query;
@@ -61,6 +63,12 @@ const query: Query = {
     this.init();
     this.q.COLUMNS = columns || [];
     this.q.ACTION = "insert";
+    return this;
+  },
+  update(columns) {
+    this.init();
+    this.q.COLUMNS = columns ? `${columns[0]}="${columns[1]}"` : [];
+    this.q.ACTION = "update";
     return this;
   },
   // TABLE
@@ -125,11 +133,11 @@ const compile: Compile = {
   },
   delete: (q: QueryObject) => {
     // Implementation for delete query
-    return `DELETE ${q.COLUMNS.toString()} FROM ${q.TABLE};`;
+    return `DELETE ${q.COLUMNS.toString()} FROM ${q.TABLE}${q.WHERE};`;
   },
   update: (q: QueryObject) => {
     // Implementation for update query
-    return `UPDATE ${q.TABLE} SET ... WHERE ...;`;
+    return `UPDATE ${q.TABLE} SET ${q.COLUMNS.toString()} ${q.WHERE};`;
   },
 };
 

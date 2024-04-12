@@ -1,5 +1,6 @@
-import { type SqlLite, builder } from "^/database/builder";
+import { type SqlLite } from "^/database/builder";
 import q from "^/database/query";
+import { buildSqlite } from "^/database/buildSqlite";
 
 interface Model {
   seed<T = unknown>(db: D1Database, table: string, column: string[], data: string[][]): Promise<D1Result<T>[] | null>;
@@ -15,8 +16,8 @@ const migrate: Model = {
       return null;
     }
   },
-  migrate: async (db, table) => {
-    const statements = await Promise.all([await builder.dropIndex(table), await builder.dropTable(table), await builder.createTable(table)]);
+  migrate: async (db, tables) => {
+    const statements = await Promise.all([await buildSqlite.dropTable(tables), await buildSqlite.createTable(tables)]);
     const migrations = statements.flatMap((groups) => groups.map((statement) => `${statement}`));
     try {
       return await db.batch(migrations.map((line) => db.prepare(`${line}`)));

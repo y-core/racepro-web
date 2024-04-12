@@ -3,6 +3,7 @@ import { type DocumentHead, server$ } from "@builder.io/qwik-city";
 
 import q from "^/database/query";
 import m from "^/database/migrate";
+import { buildSqlite } from "^/database/buildSqlite";
 
 import { isDev } from "@builder.io/qwik/build";
 
@@ -16,6 +17,7 @@ const getPragma = server$(async function () {
   const db = this.platform.env["MAIN_DATA"];
   const res = await db.prepare("PRAGMA table_info(event)").all();
 
+  // return {};
   return res.results.map((row) => {
     return row.name;
   });
@@ -25,14 +27,18 @@ const getData = server$(async function () {
   const db = this.platform.env["MAIN_DATA"];
   const res = await db.prepare(q.select().from("event").render()).all();
 
+  // return [];
   return res.results;
 });
-const migrateSchema = server$(async function (schema) {
-  const db = this.platform.env["MAIN_DATA"];
-  return await m.migrate(db, schema);
+
+// const migrateSchema = server$(async function (schema) {
+const migrateSchema = server$(async function () {
+  const db = this.platform.env.MAIN_DATA;
+  const tables = await buildSqlite.serializeSQLite("/src/server/schema/20240404.sql.ts");
+  return await m.migrate(db, tables);
 });
 const seedData = server$(async function (schema) {
-  const db = this.platform.env["MAIN_DATA"];
+  const db = this.platform.env.MAIN_DATA;
   return await m.seed(db, schema.table, schema.columns, schema.data);
 });
 
@@ -63,7 +69,8 @@ export default component$(() => {
         <button
           class="h-12 w-28 rounded-md bg-sky-600 text-slate-200 ring-1 ring-inset hover:bg-sky-700 "
           onClick$={async () => {
-            const res = await migrateSchema(s.schema.event);
+            // const res = await migrateSchema(s.schema.todos);
+            const res = await migrateSchema();
             console.log(res);
           }}
         >
@@ -73,6 +80,7 @@ export default component$(() => {
           class="h-12 w-28 rounded-md bg-sky-600 text-slate-200 ring-1 ring-inset hover:bg-sky-700 "
           onClick$={async () => {
             const res = await seedData(s.data.event);
+            // const res = await seedData();
             console.log(res);
           }}
         >
