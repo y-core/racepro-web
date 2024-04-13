@@ -36,6 +36,7 @@ export const event: SqlLite = {
     { name: "event_date", type: "INTEGER" },
     { name: "event_start_time", type: "INTEGER" },
     { name: "event_end_time", type: "INTEGER" },
+    // How to handle 3 race distances for the event distance?
     // { name: "event_distance", type: "INTEGER", notNull: true },
     { name: "event_elevation_gain", type: "INTEGER" },
     { name: "event_total_tickets", type: "INTEGER" },
@@ -51,11 +52,8 @@ export const event: SqlLite = {
     { name: "event_details", type: "TEXT" },
     { name: "event_fees", type: "INTEGER" },
     { name: "event_entry_details", type: "TEXT" },
-
-    { name: "event_comrades_qualifier", type: "INT" },
     { name: "event_race_day_information", type: "TEXT" },
     { name: "event_coordinates", type: "TEXT"},
-
     // { name: "event_created_by_user_id", type: "INTEGER", notNull: true },
     // { name: "event_primary_user", type: "INTEGER", notNull: true },
     // { name: "event_verified", type: "INT", notNull: true, default: "0" },

@@ -12,8 +12,11 @@ export default component$(() => {
         <section id="about"></section>
         <hr />
         <section id="contact"></section>
+        <section class = ""></section>
         <Footer />
       </div>
     </>
   );
 });
+
+

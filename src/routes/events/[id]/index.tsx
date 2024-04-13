@@ -48,6 +48,10 @@ export default component$(() => {
               <div class="p-6">
                 <h3>{row.event_name}</h3>
                 <p class="text-gray-400">{row.event_address}</p>
+                <div class = "col-2">
+                  <h3> Number of tickets:</h3> 
+                  <p> {row.event_fees} </p>
+                </div>
               </div>
             </div>
           </>
